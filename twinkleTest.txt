@@ -1,0 +1,1 @@
+echo -n 4408FF147A65 | perl -pe 's/([0-9a-f]{2})/chr hex $1/gie' > /dev/tcp/192.168.1.100/8889

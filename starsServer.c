@@ -26,6 +26,7 @@
 
 #define WRITE_COMMAND           0b100101L
 #define CONTROL_BITS            0b10110L
+#define INSTRUCTION_BYTES       28
 
 static int myFd ;
 
@@ -207,6 +208,29 @@ void *star_driver() {
 	unsigned char *myData ;
 	int bg_brightness, fg_brightness, brightness, header_bits, size;
 	float const_b1, const_b2, const_b3;
+
+	//  For each cascaded device, 224 bits (14 bytes)
+	//  MSB
+	//  Write Command (6 bits 25h)
+	//  Function Control (5 bits)
+	//  BC for BLUE (7 bits)
+	//  BC for GREEN (7 bits)
+	//  BC for RED (7 bits)
+	//  GS for 12 LEDs (16 bits x 12 = 192 bits)
+
+
+	//  External commands come through server, for example
+	// 
+	//  echo -n 14646424 7A65 | perl -pe 's/([0-9a-f]{2})/chr hex $1/gie' > /dev/tcp/192.168.1.100/8889
+	//
+	//  Config / command code is AABBCCDDEEEE
+	//  
+	//  AA is "foreground" brightness for contrast in constellations
+	//  BB is general brightness
+	//  CC is overall brightness (BG brightness), 0 to 127
+	//  DD is the mode configuration; top-level mode mask is 0xF0
+	//  EEEE is a command key, and must be 7A65
+	//
 	// Constellations
 	//
 	// 0 - No constellation
@@ -246,13 +270,15 @@ void *star_driver() {
 	double raindrops[10][184]; // Center X, Center Y, Girth, Start Time, Star Radii
 	int raindropCounter = 0;
 	int raindropFrequency;
-	double starRadius;
-	int b, t, ctr = 0;
+	double starRadius, t, twinklePeriod_s, phase;
+	int b, ctr = 0;
 	int i, j, k;
 	int const_number = 0, last_const_number = 0;
 	int dayCode = 0x0103FF40;
 	int nightCode = 0x00010140;
 	int dayNightFade = 40000;
+	struct timeval t0;
+	//time_t now;
 
   	if ((myData = malloc (MAX_SIZE)) == NULL)
 	  {
@@ -267,25 +293,78 @@ void *star_driver() {
 		//printf("%lX\n", machineState);
 		bg_brightness = (machineState & 0x00007F00) >> 8;
 		switch ((machineState & 0xF0)>> 4) {
+			case 0xF: // Testing protocol
+				delay(100);
+	    		if (ctr < (STAR_HUBS*12*0)) {  // run through individual pixels once
+		    		fprintf (stderr, "Individual Cycle\n");			
+	  				for (j = 0; j < STAR_HUBS; j++) {
+	   					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
+						myData[0+j*INSTRUCTION_BYTES] =  (header_bits & 0xFF000000) >> 24;
+	   					myData[1+j*INSTRUCTION_BYTES] =  (header_bits & 0x00FF0000) >> 16;
+	   					myData[2+j*INSTRUCTION_BYTES] =  (header_bits & 0x0000FF00) >> 8;
+	   					myData[3+j*INSTRUCTION_BYTES] =  (header_bits & 0x000000FF);
+						for (i = 0; i < 12; i++) {
+							if (((j*12) + i) == (stateCtr % (STAR_HUBS * 12))) {
+							// if ((i==0) & (j==0)) {
+								b = 0x0F00;
+						        ctr++;
+							} else {
+								b = 0x00;
+							}
+							// b = (stateCtr % 2048) << 2;
+				    		// fprintf (stderr, "Writing i %i j %i b %i\n",i,j,b);			
+					        myData[i*2+5+j*INSTRUCTION_BYTES] = (b & 0x00FF);
+					        myData[i*2+4+j*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
+					    }
+					}
+				}
+				twinklePeriod_s = 2;
+	    		if (ctr >= (STAR_HUBS*12*0)) {  // show intensity scaling
+	    			delay(200);
+					b = pow(2,stateCtr  % 15);
+		    		fprintf (stderr, "Brightness Sweep, %i\n",b);			
+	  				for (j = 0; j < STAR_HUBS; j++) {
+	   					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
+						myData[0+j*INSTRUCTION_BYTES] =  (header_bits & 0xFF000000) >> 24;
+	   					myData[1+j*INSTRUCTION_BYTES] =  (header_bits & 0x00FF0000) >> 16;
+	   					myData[2+j*INSTRUCTION_BYTES] =  (header_bits & 0x0000FF00) >> 8;
+	   					myData[3+j*INSTRUCTION_BYTES] =  (header_bits & 0x000000FF);
+						for (i = 0; i < 12; i++) {
+					        myData[i*2+5+j*INSTRUCTION_BYTES] = (b & 0x00FF);
+					        myData[i*2+4+j*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
+					    }
+					}
+				}
+  				size = INSTRUCTION_BYTES * STAR_HUBS;
+  				if (wiringPiSPIDataRW (SPI_CHAN, myData, size) == -1) {
+				        printf("Fail!\n");
+			  	}
+				break;
 			case 0x1:
-				//  Standard Mode
+				//  Standard Mode - twinkle
+				//  First command word, twinkle period, in seconds * 10
+				//  Second command word, twinkle brightness amplitude, log_2; max should be around 8
 				brightness =    (machineState & 0x00FF0000) >> 16;
-				fg_brightness = (machineState & 0xFF000000) >> 24;
+	    		// fprintf (stderr, "Entering Standard Mode, brightness %i\n",brightness);
+				twinklePeriod_s = (double) ((machineState & 0xFF000000) >> 24)/10;
 				ctr = 0;
+				// twinklePeriod_s = 2;
+				gettimeofday(&t0, NULL); // get current time
+				t = (double) t0.tv_usec/1000000 + t0.tv_sec;
+	    		//fprintf (stderr, "Time is %f\n",t);
   				for (j = 0; j < STAR_HUBS; j++) {
    					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
-					myData[0+j*28] =  (header_bits & 0xFF000000) >> 24;
-   					myData[1+j*28] =  (header_bits & 0x00FF0000) >> 16;
-   					myData[2+j*28] =  (header_bits & 0x0000FF00) >> 8;
-   					myData[3+j*28] =  (header_bits & 0x000000FF);
+					myData[0+j*INSTRUCTION_BYTES] =  (header_bits & 0xFF000000) >> 24;
+   					myData[1+j*INSTRUCTION_BYTES] =  (header_bits & 0x00FF0000) >> 16;
+   					myData[2+j*INSTRUCTION_BYTES] =  (header_bits & 0x0000FF00) >> 8;
+   					myData[3+j*INSTRUCTION_BYTES] =  (header_bits & 0x000000FF);
 					for (i = 0; i < 12; i++) {
-						b = (int) pow(2,(double) 1+brightness + brightness*sin (2 * PI * t / 1000 + (double) (ctr % 10) * PI * 2 / 10 ))-1;
-						//b = (int) pow(2,(double) brightness + (double) StarsBrightness[ctr] / 5.0 * (double) fg_brightness);
-						//b = (int) pow(2,(double) brightness + (double) StarsBrightness[ctr-indexOffset]);
-						//b = (int) pow(2,(double) brightness + (double) StarsBrightness[ctr-indexOffset]);
-					        myData[i*2+5+j*28] = (b & 0x00FF);
-					        myData[i*2+4+j*28] = (b & 0xFF00) >> 8;
-					        ctr++;
+						phase = (double) (ctr % 10) * PI * 2 / 10 ;  // Each star has a different phase
+						b = (int) pow(2,(double) brightness + (double) brightness * sin (2 * PI * t / twinklePeriod_s + phase))-1;
+		    			// fprintf (stderr, "Brightness %i\n",b);
+				        myData[i*2+5+j*INSTRUCTION_BYTES] = (b & 0x00FF);
+				        myData[i*2+4+j*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
+				        ctr++;
    					}
   				}
   				size = 28 * STAR_HUBS;
@@ -295,6 +374,7 @@ void *star_driver() {
 				break;
 			case 0x2:
 				//  Constellation Mode
+	    		fprintf (stderr, "Entering Constellation Mode\t%lX\n",stateCtr);
 				fg_brightness = (machineState & 0xFF000000) >> 24;
 				brightness = (machineState & 0x0000FF0000) >> 16;
 				const_b1 = (float) brightness / 16.0;
@@ -311,10 +391,10 @@ void *star_driver() {
 				ctr = 1;
   				for (j = 0; j < STAR_HUBS; j++) {
    					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
-					myData[0+j*28] =  (header_bits & 0xFF000000) >> 24;
-   					myData[1+j*28] =  (header_bits & 0x00FF0000) >> 16;
-   					myData[2+j*28] =  (header_bits & 0x0000FF00) >> 8;
-   					myData[3+j*28] =  (header_bits & 0x000000FF);
+					myData[0+j*14] =  (header_bits & 0xFF000000) >> 24;
+   					myData[1+j*14] =  (header_bits & 0x00FF0000) >> 16;
+   					myData[2+j*14] =  (header_bits & 0x0000FF00) >> 8;
+   					myData[3+j*14] =  (header_bits & 0x000000FF);
 					for (i = 0; i < 12; i++) {
 						b = (int) pow(2,const_b1);
 						for (k = 0; k < constellations[last_const_number][0]; k++) { 
@@ -324,17 +404,18 @@ void *star_driver() {
 							if (ctr == constellations[const_number][k+1]) b = (int) pow(2,const_b2);
 					    		//fprintf (stderr, "Star Finder:: %d\t%d\n", ctr,constellations[const_number][k+1]) ;
 						}
-					        myData[i*2+5+j*28] = (b & 0x00FF);
-					        myData[i*2+4+j*28] = (b & 0xFF00) >> 8;
+					        myData[i*2+5+j*14] = (b & 0x00FF);
+					        myData[i*2+4+j*14] = (b & 0xFF00) >> 8;
 					        ctr++;
    					}
   				}
-  				size = 28 * STAR_HUBS;
+  				size = 14 * STAR_HUBS;
   				if (wiringPiSPIDataRW (SPI_CHAN, myData, size) == -1) {
 				        printf("Fail!\n");
 			  	}
 				break;
 			case 0x3:
+	    		fprintf (stderr, "Rotating Constellation Mode");
 				//  Rotating Constellation Mode
 				fg_brightness = (machineState & 0xFF000000) >> 24;
 				brightness = (machineState & 0x0000FF0000) >> 16;
@@ -357,10 +438,10 @@ void *star_driver() {
 				ctr = 1;
   				for (j = 0; j < STAR_HUBS; j++) {
    					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
-					myData[0+j*28] =  (header_bits & 0xFF000000) >> 24;
-   					myData[1+j*28] =  (header_bits & 0x00FF0000) >> 16;
-   					myData[2+j*28] =  (header_bits & 0x0000FF00) >> 8;
-   					myData[3+j*28] =  (header_bits & 0x000000FF);
+					myData[0+j*14] =  (header_bits & 0xFF000000) >> 24;
+   					myData[1+j*14] =  (header_bits & 0x00FF0000) >> 16;
+   					myData[2+j*14] =  (header_bits & 0x0000FF00) >> 8;
+   					myData[3+j*14] =  (header_bits & 0x000000FF);
 					for (i = 0; i < 12; i++) {
 						b = (int) pow(2,const_b1);
 						for (k = 0; k < constellations[last_const_number][0]; k++) { 
@@ -370,9 +451,9 @@ void *star_driver() {
 							if (ctr == constellations[const_number][k+1]) b = (int) pow(2,const_b2);
 					    		//fprintf (stderr, "Star Finder:: %d\t%d\n", ctr,constellations[const_number][k+1]) ;
 						}
-					        myData[i*2+5+j*28] = (b & 0x00FF);
-					        myData[i*2+4+j*28] = (b & 0xFF00) >> 8;
-					        ctr++;
+				        myData[i*2+5+j*14] = (b & 0x00FF);
+				        myData[i*2+4+j*14] = (b & 0xFF00) >> 8;
+				        ctr++;
    					}
   				}
   				size = 28 * STAR_HUBS;
@@ -382,6 +463,7 @@ void *star_driver() {
 				break;
 			case 0xFF:
 				//  Raindrop Mode
+	    		fprintf (stderr, "Entering Raindrop Mode");
 				raindropFrequency = (machineState & 0xFF000000) >> 24;
 				brightness = (machineState & 0x7F0000) >> 16;
 				if (stateCtr == 1) { 			// initialize control array
@@ -436,6 +518,7 @@ void *star_driver() {
 			  	}
 				break;
 			case 0x4:
+	    		fprintf (stderr, "Entering Dance Mode");
 				//  Dance  Mode
 				t = t + 10;
 				delay(10);
@@ -459,6 +542,7 @@ void *star_driver() {
 			  	}
 				break;
 			case 0x5:
+	    		fprintf (stderr, "Entering Dance Mode, Shifting brightness");
 				//  Dance  Mode, shifting brightness
 				//  Will interpolate all fields
 				t = t + 10;
