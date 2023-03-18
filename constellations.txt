@@ -1,0 +1,28 @@
+#  Config / command code is AABBCCDDEEEE
+#  
+#  AA is "foreground" brightness for contrast in constellations
+#  BB is general brightness
+#  CC is overall brightness (BG brightness), 0 to 127
+#  DD is the mode configuration; top-level mode mask is 0xF0
+#  EEEE is a command key, and must be 7A65
+#
+# Constellations
+#
+# 0 - No constellation
+# 1 - Cygnus
+# 2 - Lacerta
+# 3 - Andromeda
+# 4 - Perseus
+# 5 - Cephus
+# 6 - Cassiopeia
+# 7 - Hercules
+# 8 - Draco
+# 9 - Ursa Minor
+# 10 - Camelopardalis
+# 11 - Auriga
+# 12 - Canes Venatici
+# 13 - Ursa Major
+# 14 - Leo Minor
+# 15 - Lynx
+
+echo -n 4404FFF77A65 | perl -pe 's/([0-9a-f]{2})/chr hex $1/gie' > /dev/tcp/192.168.1.100/8889

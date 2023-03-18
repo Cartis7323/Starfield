@@ -18,7 +18,7 @@
 #define TRUE    (1==1)
 #define FALSE   (!TRUE)
 
-#define STAR_HUBS               20
+#define STAR_HUBS               17
 
 #define SPI_CHAN                0
 #define NUM_TIMES               100
@@ -42,7 +42,7 @@ long stateCtr = 0;
 int StarsBrightness[180] = {1,1,1,3,3,3,1,0,0,0,2,0,3,3,2,2,1,0,0,0,2,1,1,2,0,1,0,0,0,1,1,0,0,1,2,2,5,3,1,0,0,0,2,1,2,1,2,2,0,1,2,0,0,1,0,0,0,0,0,0,1,0,1,2,1,3,2,0,0,3,0,2,1,3,0,3,0,1,1,1,2,0,1,0,1,0,2,0,0,2,0,0,1,0,0,0,1,0,1,0,1,0,3,3,0,1,0,0,1,0,0,0,1,1,0,0,2,1,0,1,1,0,0,0,0,0,1,0,0,2,0,0,3,1,1,2,0,1,0,2,1,0,0,1,2,2,1,1,1,1,0,2,0,1,1,1,0,1,1,1,1,0,2,0,0,1,1,1,0,0,0,0,2,1,1,3,3,0,0,1};
 double StarsX[180] = {290.810811,317.055556,329.264706,349.5,365.833333,380.756098,371.5,368.083333,391.088235,395.724138,356.5,342.078947,301.815789,296.571429,321.027027,289.088235,261.925926,289.724138,216.178571,245.625,237.540541,237.611111,190.53125,226.8,197.113636,222.5,271.222222,159.333333,171.129032,261.7,257.282051,244.533333,213,202.114286,184.147059,199.942857,137.071429,128.864865,172.25,197.230769,193.071429,231.05,108.909091,116.5,126.5,125.571429,135.638889,97.548387,120.852941,126.633333,115.214286,261.190476,219.925,284.5,257,165.5,119.833333,168.897436,158.925,158.684211,175.027778,177.617647,150.575758,134.081081,159.916667,166.2,191.828571,180.818182,170.5,188.181818,173.65625,167.5,250.631579,207.606061,232.65625,260.5,249,267.357143,277.857143,225.871795,208.925,206.5,214.837838,194,298.571429,297.368421,293.611111,280.833333,279.571429,275.756098,269.5,289,273.515152,283,302.5,305.5,374.214286,357.44186,334.166667,306.71875,322.789474,339.777778,301.756098,315.368421,324.5,304.833333,332.935484,340,385,388,388,391.837209,399.871795,418.380952,441.424242,419.128205,398.702703,375.357143,374.363636,355.073171,447.944444,431.5,419.5,395.794118,407.366667,395.5,386.28125,391.037037,406.789474,409.419355,422.885714,435.925926,454.571429,461.5,454.805556,474.5,458.545455,472.925926,487.029412,478.128205,496.74359,495.580645,494.34375,511.909091,473.243243,480.228571,465.818182,464.5,459.871795,468.090909,525.5,485.15625,520.5,508.424242,531.027778,500.903226,396.928571,404.152174,421.925,404.333333,455.909091,412.205882,433.8,457.903226,439.5,424.171429,379.857143,425,386.424242,357.02439,366.071429,357.717949,390.463415,294.282051,334.459459,367.815789,326,343,372.315789,302.142857};
 double StarsY[180] = {33.756757,74.805556,111,114.5,120.5,100,70.5,79.972222,130.029412,93.586207,54.5,60.552632,129.315789,105.771429,100.162162,63.794118,35.407407,30.413793,50.607143,53.15625,68.918919,76.861111,86.1875,121.925,221.795455,165.5,237.333333,190.222222,139.129032,156.175,138.051282,127.288889,126.892857,116.885714,79.470588,125.571429,288.809524,258.702703,255,244.846154,280.190476,243.075,257.30303,266.36,297.5,300.771429,302.083333,316.419355,379.382353,394.633333,388.5,336.071429,281.65,324.705882,294.410256,297.5,323.5,334.641026,343.2,335.184211,383.083333,372.147059,372.424242,374.459459,405.972222,395.075,441,442.181818,414.5,367.181818,364,362.5,411.078947,423.515152,437.375,458.5,399,356.095238,467.214286,364.871795,366.2,387.294118,375.405405,376,380.771429,375.5,369.138889,444.566667,396.228571,366,429.5,423.3,452.393939,461.5,459,457.5,440.5,420.55814,433.805556,367.1875,309.894737,320.083333,392,382.078947,386.5,404.5,443.580645,448.735294,372.756098,398,382.5,359.55814,366.871795,341.095238,338.060606,329.128205,346.864865,323.904762,378.909091,362.292683,398.194444,405.5,396.5,408.088235,414.633333,417.4,409.8125,431.814815,430.894737,464.129032,442.114286,444.407407,385.228571,401,415.055556,410.5,424.090909,429.407407,411.617647,382.128205,377.25641,404.451613,394.46875,371.30303,224.243243,247.571429,307.181818,324.5,358.871795,366.30303,333.705882,348.625,327,301.424242,252.083333,229.677419,271.809524,290.565217,281.8,255,244.69697,308.911765,199.075,227.677419,180.5,158,150.285714,226.243902,231.424242,205.585366,223.809524,238.897436,206.121951,302.897436,163.081081,203.684211,249.589744,246.5,283.684211,157.285714};
-int indexOffset = 60;
+int indexOffset = 60-24;
 
 //the thread functions
 void *connection_handler(void *);
@@ -273,6 +273,7 @@ void *star_driver() {
 	double starRadius, t, twinklePeriod_s, phase;
 	int b, ctr = 0;
 	int i, j, k;
+	int starIndex;
 	int const_number = 0, last_const_number = 0;
 	int dayCode = 0x0103FF40;
 	int nightCode = 0x00010140;
@@ -294,9 +295,13 @@ void *star_driver() {
 		bg_brightness = (machineState & 0x00007F00) >> 8;
 		switch ((machineState & 0xF0)>> 4) {
 			case 0xF: // Testing protocol
-				delay(100);
-	    		if (ctr < (STAR_HUBS*12*0)) {  // run through individual pixels once
-		    		fprintf (stderr, "Individual Cycle\n");			
+				delay(1);
+	    		// fprintf (stderr, "StateCtr %lX\n",stateCtr);			
+	    		int individualSweeps = 10000;
+	    		int intensitySweeps = 3;
+	    		int constellationSweeps = 3;
+	    		//if (stateCtr < (STAR_HUBS*12*individualSweeps)) {  // run through individual pixels once
+	    		if (1==1) {  // run through individual pixels once
 	  				for (j = 0; j < STAR_HUBS; j++) {
 	   					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
 						myData[0+j*INSTRUCTION_BYTES] =  (header_bits & 0xFF000000) >> 24;
@@ -304,37 +309,95 @@ void *star_driver() {
 	   					myData[2+j*INSTRUCTION_BYTES] =  (header_bits & 0x0000FF00) >> 8;
 	   					myData[3+j*INSTRUCTION_BYTES] =  (header_bits & 0x000000FF);
 						for (i = 0; i < 12; i++) {
-							if (((j*12) + i) == (stateCtr % (STAR_HUBS * 12))) {
-							// if ((i==0) & (j==0)) {
-								b = 0x0F00;
-						        ctr++;
+							// starIndex = ((j-2)*12 + i) % 180;
+							starIndex = (j*12 + (180-24) + i) % 180;
+							double distance;
+							double radius;
+							double cx = 250;
+							double cy = 250;
+							radius = sqrt((StarsX[starIndex] - cx) * (StarsX[starIndex] - cx) + (StarsY[starIndex] - cy)*(StarsY[starIndex] - cy));
+							double distanceSq = 0;
+							if ((stateCtr % 1500) <= 500) {								
+								distance = StarsX[starIndex] - (double) (stateCtr % 500);
+								distanceSq = distance*distance;
+							} else if ((stateCtr % 1500) > 1000) {
+								distance = StarsY[starIndex] - (double) (stateCtr % 500);
+								distanceSq = distance*distance;
 							} else {
-								b = 0x00;
+								distanceSq = pow(radius - (double) (stateCtr % 250),2);
 							}
-							// b = (stateCtr % 2048) << 2;
-				    		// fprintf (stderr, "Writing i %i j %i b %i\n",i,j,b);			
-					        myData[i*2+5+j*INSTRUCTION_BYTES] = (b & 0x00FF);
-					        myData[i*2+4+j*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
+							b = (int) 3840*pow(2,-1*distanceSq/2/10/10);
+							b = (int) 40*pow(2,-1*distanceSq/2/10/10);
+					        myData[i*2+5+(j)*INSTRUCTION_BYTES] = (b & 0x00FF);
+					        myData[i*2+4+(j)*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
 					    }
 					}
 				}
-				twinklePeriod_s = 2;
-	    		if (ctr >= (STAR_HUBS*12*0)) {  // show intensity scaling
-	    			delay(200);
-					b = pow(2,stateCtr  % 15);
-		    		fprintf (stderr, "Brightness Sweep, %i\n",b);			
-	  				for (j = 0; j < STAR_HUBS; j++) {
-	   					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
-						myData[0+j*INSTRUCTION_BYTES] =  (header_bits & 0xFF000000) >> 24;
-	   					myData[1+j*INSTRUCTION_BYTES] =  (header_bits & 0x00FF0000) >> 16;
-	   					myData[2+j*INSTRUCTION_BYTES] =  (header_bits & 0x0000FF00) >> 8;
-	   					myData[3+j*INSTRUCTION_BYTES] =  (header_bits & 0x000000FF);
-						for (i = 0; i < 12; i++) {
-					        myData[i*2+5+j*INSTRUCTION_BYTES] = (b & 0x00FF);
-					        myData[i*2+4+j*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
-					    }
-					}
-				}
+	   //  		if (stateCtr < (STAR_HUBS*12*individualSweeps)) {  // run through individual pixels once
+	  	// 			for (j = 0; j < STAR_HUBS; j++) {
+	   // 					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
+				// 		myData[0+j*INSTRUCTION_BYTES] =  (header_bits & 0xFF000000) >> 24;
+	   // 					myData[1+j*INSTRUCTION_BYTES] =  (header_bits & 0x00FF0000) >> 16;
+	   // 					myData[2+j*INSTRUCTION_BYTES] =  (header_bits & 0x0000FF00) >> 8;
+	   // 					myData[3+j*INSTRUCTION_BYTES] =  (header_bits & 0x000000FF);
+				// 		for (i = 0; i < 12; i++) {
+				// 			starIndex = j*12 + i;
+				// 			if (starIndex == (stateCtr % (STAR_HUBS * 12))) {
+				// 	    		fprintf (stderr, "Lighting Star %i\n",starIndex);			
+				// 	    	}
+				// 			if (starIndex <= (stateCtr % (STAR_HUBS * 12))) {
+				// 				b = 0x0F00;
+				// 			} else {
+				// 				b = 0x00;
+				// 			}
+				// 	        myData[i*2+5+(j)*INSTRUCTION_BYTES] = (b & 0x00FF);
+				// 	        myData[i*2+4+(j)*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
+				// 	    }
+				// 	}
+				// }
+				// if ((stateCtr >= (STAR_HUBS*12*(individualSweeps+intensitySweeps))) & (stateCtr < (STAR_HUBS*12*(individualSweeps+intensitySweeps+constellationSweeps)))) {
+	   //  			delay(200);
+				// 	b = pow(2,stateCtr  % 15);
+		  //   		fprintf (stderr, "Brightness Sweep, %i\n",b);			
+	  	// 			for (j = 0; j < STAR_HUBS; j++) {
+	   // 					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
+				// 		myData[0+j*INSTRUCTION_BYTES] =  (header_bits & 0xFF000000) >> 24;
+	   // 					myData[1+j*INSTRUCTION_BYTES] =  (header_bits & 0x00FF0000) >> 16;
+	   // 					myData[2+j*INSTRUCTION_BYTES] =  (header_bits & 0x0000FF00) >> 8;
+	   // 					myData[3+j*INSTRUCTION_BYTES] =  (header_bits & 0x000000FF);
+				// 		for (i = 0; i < 12; i++) {
+				// 	        myData[i*2+5+j*INSTRUCTION_BYTES] = (b & 0x00FF);
+				// 	        myData[i*2+4+j*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
+				// 	    }
+				// 	}
+				// }
+				// if ((stateCtr >= (STAR_HUBS*12*individualSweeps)) & (stateCtr < (STAR_HUBS*12*(individualSweeps+intensitySweeps)))) {
+	   //  			delay(1000);
+	   //  			indexOffset = (machineState & 0xFF000000) >> 24;
+				// 	const_number = stateCtr  % 15;
+				// 	const_number = 1;
+	   //  			const_number = (machineState & 0x00FF0000) >> 16;
+		  //   		fprintf (stderr, "Constellation Sweep, %i\n",const_number);			
+	  	// 			for (j = 0; j < STAR_HUBS; j++) {
+	   // 					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
+				// 		myData[0+j*INSTRUCTION_BYTES] =  (header_bits & 0xFF000000) >> 24;
+	   // 					myData[1+j*INSTRUCTION_BYTES] =  (header_bits & 0x00FF0000) >> 16;
+	   // 					myData[2+j*INSTRUCTION_BYTES] =  (header_bits & 0x0000FF00) >> 8;
+	   // 					myData[3+j*INSTRUCTION_BYTES] =  (header_bits & 0x000000FF);
+				// 		for (i = 0; i < 12; i++) {
+				// 			starIndex = j*12 + i;
+				// 			b = 0x0000;
+				// 			for (k = 0; k < constellations[const_number][0]; k++) { 
+				// 				if (starIndex == ((constellations[const_number][k+1])-indexOffset)) {
+				// 						b = 0x0F00;
+				// 			    		fprintf (stderr, "Lighting Star %i\n",starIndex);			
+				// 				}
+				// 			}
+				// 	        myData[i*2+5+j*INSTRUCTION_BYTES] = (b & 0x00FF);
+				// 	        myData[i*2+4+j*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
+				// 	    }
+				// 	}
+				// }
   				size = INSTRUCTION_BYTES * STAR_HUBS;
   				if (wiringPiSPIDataRW (SPI_CHAN, myData, size) == -1) {
 				        printf("Fail!\n");
@@ -387,6 +450,7 @@ void *star_driver() {
 					last_const_number = const_number;
 				}
 				const_number = (machineState & 0xF);
+	    		fprintf (stderr, "Constellation Number is \t%i\n",const_number);
 		    		//fprintf (stderr, "Constellation: %d\t%d\n", const_number,stateCtr) ;
 				ctr = 1;
   				for (j = 0; j < STAR_HUBS; j++) {
@@ -415,7 +479,7 @@ void *star_driver() {
 			  	}
 				break;
 			case 0x3:
-	    		fprintf (stderr, "Rotating Constellation Mode");
+	    		fprintf (stderr, "Rotating Constellation Mode\n");
 				//  Rotating Constellation Mode
 				fg_brightness = (machineState & 0xFF000000) >> 24;
 				brightness = (machineState & 0x0000FF0000) >> 16;
@@ -434,8 +498,8 @@ void *star_driver() {
 					last_const_number = const_number;
 				}
 				const_number = (machineState & 0xF);
-		    		//fprintf (stderr, "Constellation: %d\t%d\n", const_number,(int) stateCtr) ;
-				ctr = 1;
+	    		fprintf (stderr, "Constellation Number is \t%i\n",const_number);
+	    		fprintf (stderr, "Has \t%i\t Stars\n",constellations[const_number][0]);
   				for (j = 0; j < STAR_HUBS; j++) {
    					header_bits = (WRITE_COMMAND << 26) | (CONTROL_BITS << 21) | (bg_brightness << 14) | (bg_brightness << 7) | bg_brightness;
 					myData[0+j*14] =  (header_bits & 0xFF000000) >> 24;
@@ -443,17 +507,28 @@ void *star_driver() {
    					myData[2+j*14] =  (header_bits & 0x0000FF00) >> 8;
    					myData[3+j*14] =  (header_bits & 0x000000FF);
 					for (i = 0; i < 12; i++) {
+						starIndex = j*12 + i;
 						b = (int) pow(2,const_b1);
-						for (k = 0; k < constellations[last_const_number][0]; k++) { 
-							if (ctr == constellations[last_const_number][k+1]) b = (int) pow(2,const_b3);
+						b = 0;
+						//  First element in array is number of stars in constellation
+						for (k = 1; k < (constellations[const_number][0]+1); k++) { 
+				    		// fprintf (stderr, "k is\t%i, star num %i\n",k,constellations[const_number][k]);
+							if (starIndex == constellations[const_number][k]) {
+									b = (int) pow(2,12);
+								} else {
+									b = 0;
+								}
 						}
-						for (k = 0; k < constellations[const_number][0]; k++) { 
-							if (ctr == constellations[const_number][k+1]) b = (int) pow(2,const_b2);
-					    		//fprintf (stderr, "Star Finder:: %d\t%d\n", ctr,constellations[const_number][k+1]) ;
-						}
-				        myData[i*2+5+j*14] = (b & 0x00FF);
-				        myData[i*2+4+j*14] = (b & 0xFF00) >> 8;
-				        ctr++;
+			    		fprintf (stderr, "Star\t%i set to %i\n",starIndex,b);
+						// for (k = 0; k < constellations[last_const_number][0]; k++) { 
+						// 	if (ctr == constellations[last_const_number][k+1]) b = (int) pow(2,const_b3);
+						// }
+						// for (k = 0; k < constellations[const_number][0]; k++) { 
+						// 	if (ctr == constellations[const_number][k+1]) b = (int) pow(2,const_b2);
+					 //    		//fprintf (stderr, "Star Finder:: %d\t%d\n", ctr,constellations[const_number][k+1]) ;
+						// }
+				        myData[i*2+5+j*INSTRUCTION_BYTES] = (b & 0x00FF);
+				        myData[i*2+4+j*INSTRUCTION_BYTES] = (b & 0xFF00) >> 8;
    					}
   				}
   				size = 28 * STAR_HUBS;
